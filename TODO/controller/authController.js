@@ -39,7 +39,7 @@ module.exports.signin_post = (req,res)=>{
   var params = [req.body.email,req.body.password]
   console.log(params)
   db.get(sql_select,params, (err,row)=>{
-    if(row !== 'undefined'){
+    if(row === undefined){
         error_message = "Login failed"
         res.status(400).json({success:success,error:error_message})
     }
