@@ -1,11 +1,103 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
+<%- include('partials/head'); -%>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+    <div class="container p-3">
+      <div class="row align-items-center">
+        <div class="col">
+         <div class="card">
+           <div class="card-body">
+             <div class="card-title">
+               <h5>TODO</h5>
+             </div>
+             <button type="button" data-bs-toggle="modal" class="btn btn-primary" data-bs-target="#exampleModal">Add a Card</button>
+           </div>
+         </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title">
+                <h5>Inprogress</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title">
+                <h5>Testing</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title">
+                <h5>Done</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+   
+    <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Card Title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form id="newCard" method="post">
+              <input type="text" name="card_title" id="">
+              <input type="text" name="card_body" id="">
+              <input data-bs-dismiss="modal" type="submit"  name="" id="" value="ok">
+            </form>
+          </div>
+        </div>
+      </div>
+      <script>
+      
+        var card_titlenewCard = document.querySelector('form#newCard')
+        
+        newCard.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        var card_title = newCard.card_title.value
+        var card_body = newCard.card_body.value
+        console.log(card_title,card_body)
+        fetch('/new-card', { 
+                  method: 'POST', 
+                  body: JSON.stringify({card_title,card_body}),
+                  headers: {'Content-Type': 'application/json'}
+              }).then(response => {
+          //handle response            
+          console.log(response);
+        })
+        .then(data => {
+          //handle data
+          console.log(data);
+        })
+        .catch(error => {
+          //handle error
+          console.log(error)
+        });
+        })
+      
+      
+      var myModal = document.getElementById('exampleModal')
+      var myInput = document.getElementById('myInput')
+
+      exampleModal.addEventListener('shown.bs.modal', function () {
+        myInput.focus()
+      })
+    </script>
+
+<%- include('partials/footer'); -%>
