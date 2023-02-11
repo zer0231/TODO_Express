@@ -27,6 +27,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         });  
         db.run(`CREATE TABLE card(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            c_order INTEGER Default 0,
             title text,
             body text,
             status text,

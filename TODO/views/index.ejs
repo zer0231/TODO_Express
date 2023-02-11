@@ -24,7 +24,7 @@
     <div class="container p-3">
       <div class="row align-items-center">
         <div class="col">
-         <div class="card">
+         <div class="card todo_card">
            <div class="card-body" id="dropable_place" >
              <div class="card-title">
                <h5>TODO</h5>
@@ -65,21 +65,36 @@
         </div>
 
         <div class="col">
-          <div class="card">
+          <div class="card testing_card">
             <div class="card-body" id="dropable_place">
               <div class="card-title">
                 <h5>Testing</h5>
               </div>
+
+              <% if(testing_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < testing_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= testing_cards[i].title %>" data-value=<%= testing_cards[i].id %> draggable="true"><%= testing_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
             </div>
           </div>
         </div>
 
         <div class="col">
-          <div class="card">
+          <div class="card done_card">
             <div class="card-body" id="dropable_place">
               <div class="card-title">
                 <h5>Done</h5>
               </div>
+              <% if(done_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < done_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= done_cards[i].title %>" data-value=<%= done_cards[i].id %> draggable="true"><%= done_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
             </div>
           </div>
         </div>
@@ -105,117 +120,8 @@
           </div>
         </div>
       </div>
-      <script>
+      <script src="/javascripts/index.js">
 
-        const draggables = document.querySelectorAll('#draggable_item')
-        const dropable_place = document.querySelectorAll('#dropable_place')
-
-
-        draggables.forEach(draggable=>{
-          draggable.addEventListener('dragstart',()=>{
-            // console.log("Drag start")
-            draggable.classList.add('dragging')
-          })
-
-          draggable.addEventListener('dragend',()=>{
-            // console.log("Drag End")
-            draggable.classList.remove('dragging')
-            var json_data = {}
-            var all_todo_children = document.querySelectorAll('.todo_card #dropable_place #draggable_item')
-            for(var i=0;i<all_todo_children.length;i++)
-            {
-              console.log(i)
-              var id = all_todo_children[i].getAttribute('data-value')
-              json_data[id]=all_todo_children[i].getAttribute('value')
-              json_data['order']= i
-            }
-            var output = JSON.stringify(json_data) 
-            // console.log(output)
-
-            var all_inprogress_children = document.querySelectorAll('.inprogress_card #dropable_place #draggable_item')
-            for(i=0;i<all_inprogress_children.length;i++)
-            {
-              // console.log(all_inprogress_children[i].getAttribute('value'))
-            }
-
-            var all_testing_children = document.querySelectorAll('.testing_card #dropable_place #draggable_item')
-            for(i=0;i<all_testing_children.length;i++)
-            {
-              // console.log(all_testing_children[i].getAttribute('value'))
-            }
-            
-            
-
-          })
-
-        })
-      
-        
-
-        dropable_place.forEach(dropable=>{
-          last_added = false
-          dropable.addEventListener('dragover', e =>{
-            e.preventDefault()
-            const afterElement = getDragAfterElement(dropable,e.clientY)
-            
-            const dragging = document.querySelector('.dragging')
-            if (afterElement == null)
-            {
-              dropable.appendChild(dragging)
-              last_added = true
-            }else{
-              dropable.insertBefore(dragging,afterElement)
-            }
-            
-          })
-        })
-
-        function getDragAfterElement(dropable,y) {
-          const draggableElements = [...dropable.querySelectorAll('#draggable_item:not(.dragging')]
-          return draggableElements.reduce((closest,child)=>{
-            const box = child.getBoundingClientRect()
-            const offset = y - box.top - box.height / 2
-            if(offset < 0 && offset > closest.offset){
-              return {offset:offset,element:child}
-            }else{
-              return closest
-            }
-          },{offset:Number.NEGATIVE_INFINITY}).element
-        }
-
-
-        var card_titlenewCard = document.querySelector('form#newCard')
-        
-        newCard.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        var card_title = newCard.card_title.value
-        var card_body = newCard.card_body.value
-        console.log(card_title,card_body)
-        fetch('/new-card', { 
-                  method: 'POST', 
-                  body: JSON.stringify({card_title,card_body}),
-                  headers: {'Content-Type': 'application/json'}
-              }).then(response => {
-          //handle response            
-          console.log(response);
-        })
-        .then(data => {
-          //handle data
-          console.log(data);
-        })
-        .catch(error => {
-          //handle error
-          console.log(error)
-        });
-        })
-      
-      
-      var myModal = document.getElementById('exampleModal')
-      var myInput = document.getElementById('myInput')
-
-      exampleModal.addEventListener('shown.bs.modal', function () {
-        myInput.focus()
-      })
     </script>
 
 <%- include('partials/footer'); -%>

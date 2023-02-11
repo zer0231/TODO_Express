@@ -12,5 +12,6 @@ router.get('/test',function(req,res,next){
 });
 
 router.post('/new-card',cardController.newCard_post)
+router.post('/update-cards',cardController.updateCards_post)
 
 module.exports = router;
