@@ -1,31 +1,72 @@
 <%- include('partials/head'); -%>
+<style>
+  #draggable_item:hover{
+    cursor:grab;
+  }
+
+  #draggable_item.dragging {
+    box-shadow: 20px;
+    opacity: .5;
+  }
+  .list-group-item{
+    margin-top: 20px;
+  }
+</style>
   <body>
+    <% if(user_logged !== "notlogged") {%>
+      <a href="/users/logout">Logout</a>
+      <% }else{ %>
+        <a href="/users/create">Signup</a>
+        <a href="/users/login">login</a>
+        <%}%>
+
+
     <div class="container p-3">
       <div class="row align-items-center">
         <div class="col">
          <div class="card">
-           <div class="card-body">
+           <div class="card-body" id="dropable_place" >
              <div class="card-title">
                <h5>TODO</h5>
              </div>
-             <button type="button" data-bs-toggle="modal" class="btn btn-primary" data-bs-target="#exampleModal">Add a Card</button>
-           </div>
+             <% if(todo_cards) {%>
+             <!-- <ul class="list-group todo_cards" > -->
+              <% for(var i=0; i < todo_cards.length; i++) { %>
+                <li class="list-group-item"  id="draggable_item" value="<%= todo_cards[i].title %>" data-value=<%= todo_cards[i].id %> draggable="true"><%= todo_cards[i].title %></li>
+             <% } %> 
+            <!-- </ul> -->
+            <%}%>
+             
+            </div>
+            <% if(user_logged !== "notlogged") {%>
+              <button type="button" data-bs-toggle="modal" class="btn btn-primary" data-bs-target="#exampleModal">Add a Card</button>
+              <%}%>
          </div>
         </div>
 
         <div class="col">
-          <div class="card">
-            <div class="card-body">
+          <div class="card inprogress_card">
+            <div class="card-body" id="dropable_place">
               <div class="card-title">
                 <h5>Inprogress</h5>
               </div>
+             
+                <% if(inprogress_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < inprogress_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= inprogress_cards[i].title %>" data-value=<%= inprogress_cards[i].id %> draggable="true"><%= inprogress_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
+             
+              
             </div>
           </div>
         </div>
 
         <div class="col">
           <div class="card">
-            <div class="card-body">
+            <div class="card-body" id="dropable_place">
               <div class="card-title">
                 <h5>Testing</h5>
               </div>
@@ -35,7 +76,7 @@
 
         <div class="col">
           <div class="card">
-            <div class="card-body">
+            <div class="card-body" id="dropable_place">
               <div class="card-title">
                 <h5>Done</h5>
               </div>
@@ -65,7 +106,84 @@
         </div>
       </div>
       <script>
+
+        const draggables = document.querySelectorAll('#draggable_item')
+        const dropable_place = document.querySelectorAll('#dropable_place')
+
+
+        draggables.forEach(draggable=>{
+          draggable.addEventListener('dragstart',()=>{
+            // console.log("Drag start")
+            draggable.classList.add('dragging')
+          })
+
+          draggable.addEventListener('dragend',()=>{
+            // console.log("Drag End")
+            draggable.classList.remove('dragging')
+            var json_data = {}
+            var all_todo_children = document.querySelectorAll('.todo_card #dropable_place #draggable_item')
+            for(var i=0;i<all_todo_children.length;i++)
+            {
+              console.log(i)
+              var id = all_todo_children[i].getAttribute('data-value')
+              json_data[id]=all_todo_children[i].getAttribute('value')
+              json_data['order']= i
+            }
+            var output = JSON.stringify(json_data) 
+            // console.log(output)
+
+            var all_inprogress_children = document.querySelectorAll('.inprogress_card #dropable_place #draggable_item')
+            for(i=0;i<all_inprogress_children.length;i++)
+            {
+              // console.log(all_inprogress_children[i].getAttribute('value'))
+            }
+
+            var all_testing_children = document.querySelectorAll('.testing_card #dropable_place #draggable_item')
+            for(i=0;i<all_testing_children.length;i++)
+            {
+              // console.log(all_testing_children[i].getAttribute('value'))
+            }
+            
+            
+
+          })
+
+        })
       
+        
+
+        dropable_place.forEach(dropable=>{
+          last_added = false
+          dropable.addEventListener('dragover', e =>{
+            e.preventDefault()
+            const afterElement = getDragAfterElement(dropable,e.clientY)
+            
+            const dragging = document.querySelector('.dragging')
+            if (afterElement == null)
+            {
+              dropable.appendChild(dragging)
+              last_added = true
+            }else{
+              dropable.insertBefore(dragging,afterElement)
+            }
+            
+          })
+        })
+
+        function getDragAfterElement(dropable,y) {
+          const draggableElements = [...dropable.querySelectorAll('#draggable_item:not(.dragging')]
+          return draggableElements.reduce((closest,child)=>{
+            const box = child.getBoundingClientRect()
+            const offset = y - box.top - box.height / 2
+            if(offset < 0 && offset > closest.offset){
+              return {offset:offset,element:child}
+            }else{
+              return closest
+            }
+          },{offset:Number.NEGATIVE_INFINITY}).element
+        }
+
+
         var card_titlenewCard = document.querySelector('form#newCard')
         
         newCard.addEventListener('submit', async (e)=>{

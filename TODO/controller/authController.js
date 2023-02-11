@@ -56,7 +56,7 @@ module.exports.signin_post = (req,res)=>{
 
 module.exports.card_get = (req,res)=>{
   console.log(req.signedCookies['u_id'])
-  var sql = "select * from user";
+  var sql = "select * from card";
   db.all(sql, (err, rows) => {
     // console.log(rows)
     if (err) {
