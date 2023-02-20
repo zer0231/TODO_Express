@@ -1,0 +1,127 @@
+<%- include('partials/head'); -%>
+<style>
+  #draggable_item:hover{
+    cursor:grab;
+  }
+
+  #draggable_item.dragging {
+    box-shadow: 20px;
+    opacity: .5;
+  }
+  .list-group-item{
+    margin-top: 20px;
+  }
+</style>
+  <body>
+    <% if(user_logged !== "notlogged") {%>
+      <a href="/users/logout">Logout</a>
+      <% }else{ %>
+        <a href="/users/create">Signup</a>
+        <a href="/users/login">login</a>
+        <%}%>
+
+
+    <div class="container p-3">
+      <div class="row align-items-center">
+        <div class="col">
+         <div class="card todo_card">
+           <div class="card-body" id="dropable_place" >
+             <div class="card-title">
+               <h5>TODO</h5>
+             </div>
+             <% if(todo_cards) {%>
+             <!-- <ul class="list-group todo_cards" > -->
+              <% for(var i=0; i < todo_cards.length; i++) { %>
+                <li class="list-group-item"  id="draggable_item" value="<%= todo_cards[i].title %>" data-value=<%= todo_cards[i].id %> draggable="true"><%= todo_cards[i].title %></li>
+             <% } %> 
+            <!-- </ul> -->
+            <%}%>
+             
+            </div>
+            <% if(user_logged !== "notlogged") {%>
+              <button type="button" data-bs-toggle="modal" class="btn btn-primary" data-bs-target="#exampleModal">Add a Card</button>
+              <%}%>
+         </div>
+        </div>
+
+        <div class="col">
+          <div class="card inprogress_card">
+            <div class="card-body" id="dropable_place">
+              <div class="card-title">
+                <h5>Inprogress</h5>
+              </div>
+             
+                <% if(inprogress_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < inprogress_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= inprogress_cards[i].title %>" data-value=<%= inprogress_cards[i].id %> draggable="true"><%= inprogress_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
+             
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card testing_card">
+            <div class="card-body" id="dropable_place">
+              <div class="card-title">
+                <h5>Testing</h5>
+              </div>
+
+              <% if(testing_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < testing_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= testing_cards[i].title %>" data-value=<%= testing_cards[i].id %> draggable="true"><%= testing_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card done_card">
+            <div class="card-body" id="dropable_place">
+              <div class="card-title">
+                <h5>Done</h5>
+              </div>
+              <% if(done_cards) {%>
+                <!-- <ul class="list-group" > -->
+                 <% for(var i=0; i < done_cards.length; i++) { %>
+                   <li class="list-group-item"  id="draggable_item" value="<%= done_cards[i].title %>" data-value=<%= done_cards[i].id %> draggable="true"><%= done_cards[i].title %></li>
+                <% } %> 
+               <!-- </ul> -->
+               <%}%>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+   
+    <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Card Title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form id="newCard" method="post">
+              <input type="text" name="card_title" id="">
+              <input type="text" name="card_body" id="">
+              <input data-bs-dismiss="modal" type="submit"  name="" id="" value="ok">
+            </form>
+          </div>
+        </div>
+      </div>
+      <script src="/javascripts/index.js">
+
+    </script>
+
+<%- include('partials/footer'); -%>

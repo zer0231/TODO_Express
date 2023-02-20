@@ -1,0 +1,41 @@
+<%- include('partials/head'); -%>
+
+<form id="new_user" method="post">
+    <input type="text" name="full_name" id="">
+    <input type="text" name="email" id="">
+    <input type="text" name="password" id="">
+    <input type="text" name="username" id="">
+    <input type="submit" value="create new user">
+</form>
+<div id="status">
+
+</div>
+<script>
+    var new_user = document.querySelector('form#new_user');
+    new_user.addEventListener('submit',async (e)=>{
+        e.preventDefault();
+        var full_name = new_user.full_name.value;
+        var email = new_user.email.value;
+        var password = new_user.password.value;
+        var username = new_user.username.value;
+        var res = await fetch('create', { 
+                  method: 'POST', 
+                  body: JSON.stringify({full_name,email,password,username}),
+                  headers: {'Content-Type': 'application/json'}
+              })
+        const data = await res.json()
+        var status = document.getElementById('status')
+        console.log(data)
+        if(data.error)
+        {
+            status.innerText = data.error
+        }
+        else
+        {
+            window.location = "/";
+        }
+        })
+</script>
+
+
+<%- include('partials/footer'); -%>
